@@ -71,7 +71,7 @@ int http_parser(char *buffer, struct http_message *message, int type) {
     else if (type == http_response && atoi(message->status) == 0)
         return 400;
 
-    message->protocol = type == http_request ? buffer : message-protocol;
+    message->protocol = type == http_request ? buffer : message->protocol;
     message->line = type == http_response ? buffer : NULL;
     next_at_newline(400);
     if (type == http_request) {
