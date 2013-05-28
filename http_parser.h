@@ -7,22 +7,22 @@ struct http_header {
 
 struct http_message {
 
-    #define http_request 1
-    #define http_response 2
-    int type;
+    #define HTTP_REQUEST 1
+    #define HTTP_RESPONSE 2
+    char type;
 
     char *method, *url;
     char *protocol;
     char *status, *line;
 
-    #define http_header_max 16
-    struct http_header headers[http_header_max];
+    #define HTTP_HEADER_MAX 16
+    struct http_header headers[HTTP_HEADER_MAX];
 
     char *body;
 
-    int connection_close;
-    int connection_keepalive;
-    int gzip_supported;
+    char connection_close;
+    char connection_keepalive;
+    char gzip_supported;
 };
 
 int http_parser(char *, struct http_message *, int);

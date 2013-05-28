@@ -17,30 +17,30 @@ void try_parse(int type, int expect, char *data) {
 }
 
 int main(void) {
-  try_parse(http_request, 400, "test");
-  try_parse(http_request, 400, "GE");
-  try_parse(http_request, 400, "GET");
-  try_parse(http_request, 414, "GET ");
-  try_parse(http_request, 414, "GET /");
-  try_parse(http_request, 400, "GET / ");
-  try_parse(http_request, 413, "GET / \r\n");
-  try_parse(http_request, 413, "GET / \n");
-  try_parse(http_request, 400, "GET / HTTP/");
-  try_parse(http_request, 400, "GET / HTTP/1.1");
-  try_parse(http_request, 413, "GET / HTTP/1.1\r\n");
-  try_parse(http_request, 413, "GET / HTTP/1.1\r\nHost: test.com");
-  try_parse(http_request, 413, "GET / HTTP/1.1\r\nHost: test.com\r\n");
-  try_parse(http_request, 0, "GET / HTTP/1.1\r\nHost: test.com\r\n\r\n");
-  try_parse(http_request, 0, "GET / HTTP/1.1\r\nHost: test.com\r\nHeader:\t \r    \n     \t    Value\r\n\r\n");
+  try_parse(HTTP_REQUEST, 400, "test");
+  try_parse(HTTP_REQUEST, 400, "GE");
+  try_parse(HTTP_REQUEST, 400, "GET");
+  try_parse(HTTP_REQUEST, 414, "GET ");
+  try_parse(HTTP_REQUEST, 414, "GET /");
+  try_parse(HTTP_REQUEST, 400, "GET / ");
+  try_parse(HTTP_REQUEST, 413, "GET / \r\n");
+  try_parse(HTTP_REQUEST, 413, "GET / \n");
+  try_parse(HTTP_REQUEST, 400, "GET / HTTP/");
+  try_parse(HTTP_REQUEST, 400, "GET / HTTP/1.1");
+  try_parse(HTTP_REQUEST, 413, "GET / HTTP/1.1\r\n");
+  try_parse(HTTP_REQUEST, 413, "GET / HTTP/1.1\r\nHost: test.com");
+  try_parse(HTTP_REQUEST, 413, "GET / HTTP/1.1\r\nHost: test.com\r\n");
+  try_parse(HTTP_REQUEST, 0, "GET / HTTP/1.1\r\nHost: test.com\r\n\r\n");
+  try_parse(HTTP_REQUEST, 0, "GET / HTTP/1.1\r\nHost: test.com\r\nHeader:\t \r    \n     \t    Value\r\n\r\n");
 
-  try_parse(http_response, 400, "test");
-  try_parse(http_response, 400, "HT");
-  try_parse(http_response, 400, "HTTP/1.1");
-  try_parse(http_response, 414, "HTTP/1.1 ");
-  try_parse(http_response, 414, "HTTP/1.1 \n");
-  try_parse(http_response, 414, "HTTP/1.1 \r\n");
-  try_parse(http_response, 414, "HTTP/1.1 200");
-  try_parse(http_response, 0, "HTTP/1.1 200 OK\r\n\r\n");
+  try_parse(HTTP_RESPONSE, 400, "test");
+  try_parse(HTTP_RESPONSE, 400, "HT");
+  try_parse(HTTP_RESPONSE, 400, "HTTP/1.1");
+  try_parse(HTTP_RESPONSE, 414, "HTTP/1.1 ");
+  try_parse(HTTP_RESPONSE, 414, "HTTP/1.1 \n");
+  try_parse(HTTP_RESPONSE, 414, "HTTP/1.1 \r\n");
+  try_parse(HTTP_RESPONSE, 414, "HTTP/1.1 200");
+  try_parse(HTTP_RESPONSE, 0, "HTTP/1.1 200 OK\r\n\r\n");
 
   return 0;
 }

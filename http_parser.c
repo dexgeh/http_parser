@@ -32,19 +32,19 @@
     }
 
 int http_parser(char *buffer, struct http_message *message, int type) {
-    if (type != http_request && type != http_response) return -1;
+    if (type != HTTP_REQUEST && type != HTTP_RESPONSE) return -1;
 
     int p = 0;
     memset(message, 0, sizeof(struct http_message));
     message->type = type;
 
-    message->method = type == http_request ? buffer : NULL;
-    message->protocol = type == http_response ? buffer : NULL;
+    message->method = type == HTTP_REQUEST ? buffer : NULL;
+    message->protocol = type == HTTP_RESPONSE ? buffer : NULL;
     buffer = strchr(buffer, ' ');
     if (!buffer) return 400;
     next();
 
-    if (type == http_request) {
+    if (type == HTTP_REQUEST) {
         check_method("GET");
         check_method("HEAD");
         check_method("POST");
@@ -60,25 +60,25 @@ int http_parser(char *buffer, struct http_message *message, int type) {
         check_protocol(message->protocol);
     }
 
-    message->url = type == http_request ? buffer : NULL;
-    message->status = type == http_response ? buffer : NULL;
+    message->url = type == HTTP_REQUEST ? buffer : NULL;
+    message->status = type == HTTP_RESPONSE ? buffer : NULL;
     buffer = strchr(buffer, ' ');
     if (!buffer) return 414;
     next();
 
-    if (type == http_request && strstr(message->url, "/") != message->url)
+    if (type == HTTP_REQUEST && strstr(message->url, "/") != message->url)
         return 400;
-    else if (type == http_response && atoi(message->status) == 0)
+    else if (type == HTTP_RESPONSE && atoi(message->status) == 0)
         return 400;
 
-    message->protocol = type == http_request ? buffer : message->protocol;
-    message->line = type == http_response ? buffer : NULL;
+    message->protocol = type == HTTP_REQUEST ? buffer : message->protocol;
+    message->line = type == HTTP_RESPONSE ? buffer : NULL;
     next_at_newline(400);
-    if (type == http_request) {
+    if (type == HTTP_REQUEST) {
         check_protocol(message->protocol);
     }
 
-    int containsHostHeader = 0;
+    int contains_host_header = 0;
     int h_index = 0;
 
 
@@ -90,7 +90,7 @@ int http_parser(char *buffer, struct http_message *message, int type) {
             }
             break;
         }
-        if (h_index < http_header_max)
+        if (h_index < HTTP_HEADER_MAX)
         message->headers[h_index].name = buffer;
 
         buffer = strchr(buffer, ':');
@@ -103,14 +103,14 @@ int http_parser(char *buffer, struct http_message *message, int type) {
         }
         if_eof(413);
 
-        if (h_index < http_header_max)
+        if (h_index < HTTP_HEADER_MAX)
             message->headers[h_index].value = buffer;
 
         next_at_newline(413);
 
         struct http_header *header = &message->headers[h_index];
 
-        if (type == http_request) {
+        if (type == HTTP_REQUEST) {
             // is connection keep-alive? phase 1
             if (!strcasecmp("Connection", header->name)) {
                 if (message->protocol[7] == '0' && !strcasecmp("Keep-Alive", header->value)) {
@@ -129,8 +129,8 @@ int http_parser(char *buffer, struct http_message *message, int type) {
             }
 
             // check Host header presence, required in HTTP/1.1
-            if (!strcasecmp("Host", header->name)) {
-              containsHostHeader = 1;
+            if (!contains_host_header && !strcasecmp("Host", header->name)) {
+              contains_host_header = 1;
             }
         }
 
@@ -138,7 +138,7 @@ int http_parser(char *buffer, struct http_message *message, int type) {
     }
 
 
-    if (type == http_request) {
+    if (type == HTTP_REQUEST) {
         // is connection keep-alive? phase 2
         if (! message->connection_keepalive && ! message->connection_close) {
             if (message->protocol[7] == '0') {
@@ -150,7 +150,7 @@ int http_parser(char *buffer, struct http_message *message, int type) {
         }
 
         // required Host header
-        if (message->protocol[7] == '1' && !containsHostHeader) {
+        if (message->protocol[7] == '1' && !contains_host_header) {
             return 400;
         }
     }
